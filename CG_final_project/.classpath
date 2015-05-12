@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/native/macosx"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/jar/AppleJavaExtensions.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/jar/asm-debug-all.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/jar/jinput.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/jar/laf-plugin-7.2.1.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/jar/laf-widget-7.2.1.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/jar/log4j-api-2.0-beta9.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/jar/lwjgl_test.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/jar/lwjgl_util_applet.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/jar/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/jar/lwjgl-debug.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/jar/lwjgl.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/jar/lzma.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/jar/substance-7.2.1.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/lwjgl-2.9.3/jar/trident-7.2.1.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/ejml-v0.26-libs/EJML-core-0.26-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/ejml-v0.26-libs/EJML-core-0.26.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/ejml-v0.26-libs/EJML-equation-0.26-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/ejml-v0.26-libs/EJML-equation-0.26.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/ejml-v0.26-libs/EJML-experimental-0.26-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/ejml-v0.26-libs/EJML-experimental-0.26.jar"/>
+	<classpathentry kind="lib" path="/Users/apple/Documents/eclipse/prjsources/slick.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
