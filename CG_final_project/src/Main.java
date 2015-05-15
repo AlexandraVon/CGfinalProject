@@ -32,7 +32,7 @@ public class Main {
 	private int lives = Helper.LIVES;
 	private boolean game_over = false;
 	private boolean win = false;
-	private int level =2;
+	private int level =1;
 	
 	private int[] level_enemies_set = new int[]{Helper.LEVEL_ONE, Helper.LEVEL_TWO};
 	private int cur_enemies = level_enemies_set[level-1];
@@ -58,8 +58,8 @@ public class Main {
 	
 	private float specular_Shine = 60f;
 	
-	private float light_Ambient[] = { 0.45f, 0.45f, 0.52f, 1.0f }; 
-	private float light_Diffuse[] = { 0.55f, 0.55f, 0.55f, 1.0f };
+	private float light_Ambient[] = { 0.25f, 0.25f, 0.32f, 1.0f }; 
+	private float light_Diffuse[] = { 0.35f, 0.35f, 0.35f, 1.0f };
 	private float light_Position[] = { 0.0f, 0.0f, 1400.0f, 1.0f };
 	//---------------------new light------------------------------
 	private float light_Position2[] = { 0.0f, 0.0f, 1200.0f, 1.0f };
@@ -282,8 +282,7 @@ public class Main {
 			else if(level==1){
 				ufo_ship_frame++;
 			}
-			
-			if(level==2){
+			if(level==2 && lander!=null){
 				lander.draw();
 			}
 			
@@ -308,8 +307,6 @@ public class Main {
 				//System.out.println(ufo_ship_frame);
 				ufo_ship_frame++;
 			}
-			
-		
 			
 			for(UFO ufo : UFOset){
 				ufo.draw();
@@ -433,6 +430,29 @@ public class Main {
 					ufo_to_remove.add(ufo);
 				}
 			}
+			if (level==2 && lander!=null){
+				float lander_dist = Helper.distance(bullet.getX(), bullet.getY(), bullet.getZ(), lander.getX(), lander.getY(), lander.getZ());
+				if(lander_dist<lander.getScale()*7){
+					ArrayList<String> explosionTextures = new ArrayList<String>();
+					explosionTextures.add("res/exp_2_1.png");
+					explosionTextures.add("res/exp_2_2.png");
+					explosionTextures.add("res/exp_2_3.png");
+					Explosion explosion = new Explosion(bullet.getX(), bullet.getY(), bullet.getZ(),explosionTextures);
+					explosionSet.add(explosion);
+					bullet_to_remove.add(bullet);
+					lander.setScale(lander.getScale()*0.99f);
+					if(lander.getScale()<0.04f){
+						explosionTextures = new ArrayList<String>();
+						explosionTextures.add("res/exp_1_1.png");
+						explosionTextures.add("res/exp_1_2.png");
+						explosionTextures.add("res/exp_1_3.png");
+						explosionTextures.add("res/exp_1_4.png");
+						explosion = new Explosion(lander.getX(), lander.getY(), lander.getZ(), explosionTextures);
+						explosionSet.add(explosion);
+						lander = null;
+					}
+				}
+			}
 			//check for bullet-planet collision
 			for(int j=0; j<planetSet.size(); j++){
 				Planet planet = planetSet.get(j);
@@ -507,6 +527,29 @@ public class Main {
 						explosion = new Explosion(ufo.getX(), ufo.getY(), ufo.getZ(), explosionTextures);
 						explosionSet.add(explosion);
 						planet_to_remove.add(planet);
+					}
+				}
+			}
+			if (level==2 && lander!=null){
+				float lander_dist = Helper.distance(ufo.getX(), ufo.getY(), ufo.getZ(), lander.getX(), lander.getY(), lander.getZ());
+				if(lander_dist<lander.getScale()*7){
+					ArrayList<String> explosionTextures = new ArrayList<String>();
+					explosionTextures.add("res/exp_2_1.png");
+					explosionTextures.add("res/exp_2_2.png");
+					explosionTextures.add("res/exp_2_3.png");
+					Explosion explosion = new Explosion(ufo.getX(), ufo.getY(), ufo.getZ(),explosionTextures);
+					explosionSet.add(explosion);
+					ufo_to_remove.add(ufo);
+					lander.setScale(lander.getScale()*0.99f);
+					if(lander.getScale()<0.04f){
+						explosionTextures = new ArrayList<String>();
+						explosionTextures.add("res/exp_1_1.png");
+						explosionTextures.add("res/exp_1_2.png");
+						explosionTextures.add("res/exp_1_3.png");
+						explosionTextures.add("res/exp_1_4.png");
+						explosion = new Explosion(lander.getX(), lander.getY(), lander.getZ(), explosionTextures);
+						explosionSet.add(explosion);
+						lander = null;
 					}
 				}
 			}
