@@ -1,4 +1,13 @@
 
+import static org.lwjgl.opengl.GL11.GL_BACK;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static org.lwjgl.opengl.GL11.GL_SMOOTH;
+import static org.lwjgl.opengl.GL11.glCullFace;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glShadeModel;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -16,7 +25,6 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 
 
-
 public class Main {
 	private boolean quit = false;
 	private UnicodeFont words;
@@ -24,7 +32,7 @@ public class Main {
 	private int lives = Helper.LIVES;
 	private boolean game_over = false;
 	private boolean win = false;
-	private int level = 1;
+	private int level =2;
 	
 	private int[] level_enemies_set = new int[]{Helper.LEVEL_ONE, Helper.LEVEL_TWO};
 	private int cur_enemies = level_enemies_set[level-1];
@@ -40,18 +48,28 @@ public class Main {
 	ArrayList<Planet> planetSet = new ArrayList<Planet>();
 	ArrayList<Bullet> bulletSet = new ArrayList<Bullet>();
 	ArrayList<UFO> UFOset = new ArrayList<UFO>();
+	ArrayList<Alien> Alienset = new ArrayList<Alien>();
 	ArrayList<Explosion> explosionSet = new ArrayList<Explosion>();
 	
 	Player player;
 	Star star;
 	Earth earth;
+	Lander lander;
 	
 	private float specular_Shine = 60f;
 	
-	private float light_Ambient[] = { 0.25f, 0.25f, 0.32f, 1.0f }; 
-	private float light_Diffuse[] = { 0.25f, 0.25f, 0.25f, 1.0f };
+	private float light_Ambient[] = { 0.45f, 0.45f, 0.52f, 1.0f }; 
+	private float light_Diffuse[] = { 0.55f, 0.55f, 0.55f, 1.0f };
 	private float light_Position[] = { 0.0f, 0.0f, 1400.0f, 1.0f };
+	//---------------------new light------------------------------
+	private float light_Position2[] = { 0.0f, 0.0f, 1200.0f, 1.0f };
+	private float light_Position3[] = { 0f, 20f, 0f, 0f };
 	
+	 private static String  VERTEX_SHADER_LOCATION = "res/shader/blinn_phong_shading.vs";
+	 private static String  FRAGMENT_SHADER_LOCATION = "res/shader/blinn_phong_shading.fs";
+	 ShaderProgram shader;
+	
+	    
 	private float player_x = 0;
 	private float player_y = 0;
 	
@@ -59,6 +77,16 @@ public class Main {
 	private int ufo_ship_frame = 200;
 	
 	String fontPath = "res/adventure.ttf";
+	
+	 private void initShaders() {
+	    	
+	        try {
+	            shader = new ShaderProgram(VERTEX_SHADER_LOCATION, FRAGMENT_SHADER_LOCATION);
+	        } catch (LWJGLException e) {
+	            e.printStackTrace();
+	            System.exit(1);
+	        }
+	    }
 	
 	//start the game: initialization and call main loop
 	public void start() {
@@ -101,15 +129,25 @@ public class Main {
 		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, (FloatBuffer)temp.asFloatBuffer().put(light_Diffuse).flip());
 		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION,(FloatBuffer)temp.asFloatBuffer().put(light_Position).flip()); 
 		GL11.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT,(FloatBuffer)temp.asFloatBuffer().put(light_Ambient).flip());
-
+		
 		GL11.glLightf(GL11.GL_LIGHT1, GL11.GL_CONSTANT_ATTENUATION, 0.0f);
 		GL11.glLightf(GL11.GL_LIGHT1, GL11.GL_LINEAR_ATTENUATION, 0.00009f);
 		GL11.glLightf(GL11.GL_LIGHT1, GL11.GL_QUADRATIC_ATTENUATION, 0.0f);
- 
+        
 		GL11.glEnable(GL11.GL_LIGHT1);
 		
 		GL11.glLightModeli(GL12.GL_LIGHT_MODEL_COLOR_CONTROL, GL12.GL_SEPARATE_SPECULAR_COLOR);
 		GL11.glColorMaterial(GL11.GL_FRONT_AND_BACK,GL11.GL_AMBIENT_AND_DIFFUSE);
+		
+		initShaders();
+        
+//		 GLApp.setLight( GL11.GL_LIGHT3,
+//	        		new float[] { 0.95f, 0.15f, 0.35f, 1.0f },  // diffuse color
+//	        		new float[] { 0.0f, 0.0f, 0.0f, 1.0f },     // ambient
+//	        		new float[] { 0.03f, 0.0f, 0.0f, 1.0f },     // specular
+//	             	light_Position3);   // position (pointing up)
+//		 GL11.glEnable(GL11.GL_LIGHT3);
+
 		
 		try {
 			//font
@@ -126,6 +164,11 @@ public class Main {
 		player = new Player("res/astronaut.obj",0, 180, 0);
 		player.setScale(0.35f);
 		player.setPos(player_x, player_y, Helper.PLAYER_DEPTH);
+		
+		//initialize lander
+		lander = new Lander("res/Lander.obj",Helper.EARTH_ROT_SPEED);
+		lander.setPos(Helper.EARTH_X+2, Helper.EARTH_Y+2, Helper.EARTH_DEPTH-3);
+		lander.setScale(0.1f);
 		
 		//initialize background stars
 		star = new Star(1000);
@@ -156,12 +199,16 @@ public class Main {
 		beta.setRot(0f, 0f, 40f);
 		planetSet.add(jupiter);
 		
+	
 		render();
 
 		Display.destroy();
 	}
 	
+	
 	private void render(){
+		
+		 	 
 		if(cur_enemies==0){
 			level++;
 			cur_enemies = level_enemies_set[level-1];
@@ -178,7 +225,11 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
+		
+		
+		 
 		while (!Display.isCloseRequested() && !quit) {
+			shader.begin();
 			// set up the projection matrix
 			GL11.glMatrixMode(GL11.GL_PROJECTION);
 			GL11.glLoadIdentity();
@@ -207,6 +258,7 @@ public class Main {
 			}
 			
 			cleanBullet();
+		
 			
 			if(!game_over) earth.draw();
 			
@@ -231,10 +283,43 @@ public class Main {
 				ufo_ship_frame++;
 			}
 			
+			if(level==2){
+				lander.draw();
+			}
+			
+			if(level==2 && ufo_ship_frame % 300==100 && level_enemies_set[level-1]>0){
+				//System.out.println("level2");
+				
+				ufo_ship_frame = 0;
+				UFO ship_ufo = new UFO("res/fighter.obj",0.05f, -90 ,90, 0);			
+				ship_ufo.setScale(0.2f);
+				UFOset.add(ship_ufo);
+				level_enemies_set[level-1] -= 1;
+				
+		
+		       //ufo with acceleration
+		       UFO ship_ufo2 = new UFO("res/spaceship.obj", 0.0004f, -20,180,0,2);
+			   ship_ufo2.setScale(0.2f);
+			   UFOset.add(ship_ufo2);
+			   level_enemies_set[level-1] -= 1;
+			 
+				
+			}else if(level==2){
+				//System.out.println(ufo_ship_frame);
+				ufo_ship_frame++;
+			}
+			
+		
+			
 			for(UFO ufo : UFOset){
 				ufo.draw();
 			}
 			
+			for(Alien alien : Alienset){
+				alien.draw();
+			}
+			
+			shader.end();
 			for(Bullet bullet : bulletSet){
 				bullet.draw();
 			}
@@ -247,12 +332,17 @@ public class Main {
 			
 			cleanExplosion();
 			
+			
+			
 			pollInput();
 			
 			collisionDetection();
 			
+			
 			Display.update();
+		    
 		}
+		
 	}
 	
 	public void pollInput() {
@@ -428,9 +518,13 @@ public class Main {
 			boolean hasObj = UFOset.remove(ufo);
 			if(hasObj) cur_enemies--;
 			if(cur_enemies==0){
-//				win=true;
+			  if(level==2){
+  			    win=true;
+  			    
+			  }else{
 				level++;
 				cur_enemies = level_enemies_set[level-1];
+			  }
 			}
 		}
 		for(Planet planet:planet_to_remove){

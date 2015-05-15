@@ -1,6 +1,4 @@
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 import java.io.File;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
@@ -15,7 +13,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -28,21 +25,32 @@ public class PA1 {
     long lastFrameTime; // used to calculate delta
     
     float triangleAngle; // Angle of rotation for the triangles
-    float quadAngle; // Angle of rotation for the quads
+    float quadAngle; // Angle of rotation for the quads  
+    
+  	ShaderProgram shader;
+    
+    private void initShaders() {
 
-    private float light_Ambient[] = { 0.65f, 0.6f, 0.7f, 1.0f }; 
-	private float light_Diffuse[] = { 0.4f, 0.4f, 0.6f, 1.0f };
-	private float light_Position[] = { 0.0f, 0.0f, 1400.0f, 1.0f };
-	private float specular_Shine = 60f;
+    	try { 
+            shader = new ShaderProgram("res/shader/blinn_phong_shading.vs", "res/shader/blinn_phong_shading.fs");
+            
+        } catch (LWJGLException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
     public void run() {
 
         createWindow();
         getDelta(); // Initialise delta timer
         initGL();
-        
+        //Shader
+		initShaders();
         while (!closeRequested) {
             pollInput();
             updateLogic(getDelta());
+         
             renderGL();
 
             Display.update();
@@ -90,9 +98,9 @@ public class PA1 {
 
         Camera.apply();
         
-        
+      //shader.begin();
         try {
-			Model m = OBJLoader.loadModel(new File("res/spaceship.obj"));
+			Model m = OBJLoader.loadModel(new File("res/astronaut.obj"));
 			
 			int currentTexture=-1;
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -150,6 +158,7 @@ public class PA1 {
 			e.printStackTrace();
 		}
 
+        shader.end();
     }
 
     /**

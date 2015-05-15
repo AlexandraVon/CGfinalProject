@@ -132,6 +132,7 @@ public class abstractModel {
 		return this.pos_z;
 	}
 	
+	
 	//set rotation
 	public void setRot(float x, float y, float z){
 		this.rot_x = x;

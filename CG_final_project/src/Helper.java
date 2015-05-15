@@ -3,8 +3,8 @@ public class Helper {
 	public static String GAME_NAME = "Earth Defence";
 	public static int LIVES = 5;
 	public static int LEVELS = 2;
-	public static int LEVEL_ONE = 10;
-	public static int LEVEL_TWO = 20;
+	public static int LEVEL_ONE = 5;
+	public static int LEVEL_TWO = 10;
 	public static int SCREEN_WIDTH = 800;
 	public static int SCREEN_HEIGHT = 600;
 	public static int SCREEN_DEPTH = 1300;

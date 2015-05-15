@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
 
 
-public class UFO extends abstractModel{
+public class Alien extends abstractModel{
 	//each UFO is targeting at the earth and fly from some random place in the space
 	private float speed_x;
 	private float speed_y;
@@ -15,17 +15,17 @@ public class UFO extends abstractModel{
 	private float margin_x = 0f;
 	private float margin_y = 1f;
 	private float angle;
-	private int level=1;
 	private float time=0;
+	
 	ArrayList<Bullet> bulletSet = new ArrayList<Bullet>();
 	
-	public UFO(String filepath, float spd, float rot_x, float rot_y, float rot_z){
+	public Alien(String filepath, float spd, float rot_x, float rot_y, float rot_z){
 		super(filepath);
 		this.speed_z = spd;
 		this.pos_rot_x = rot_x;
 		this.pos_rot_y = rot_y;
 		this.pos_rot_z = rot_z;
-		//randomly generate the appearing point of the UFO
+		//randomly generate the appearing point of the alien
 		float x = ((float)Math.random()*8f-4f)*10;
 		if (x>0) margin_x = 1*(float)Math.random();
 		else margin_x = -1*(float)Math.random();
@@ -39,33 +39,40 @@ public class UFO extends abstractModel{
 		angle = (float)Math.toDegrees(Math.atan((double)(Helper.EARTH_X-x)/(double)(Helper.PLAYER_DEPTH-z)));
 		this.setRot(this.pos_rot_x, this.pos_rot_y+angle, this.pos_rot_z);
 	}
-	
-	public UFO(String filepath, float spd, float rot_x, float rot_y, float rot_z, int level){
-		this(filepath,spd,rot_x,rot_y,rot_z);
-		this.level=level;
-	}
-	public UFO(){}
+	public Alien(){}
 	
 	@Override
 	public void draw(){
-		if(level==1){
 		this.update();
-		}else if(level==2){
-		this.update2();
+		
+	
+		for (float x = -0.2f; x<=0.2f; x+=0.1f){
+			for (float y = 0f; y <= 0.2f; y+=0.1f){
+				Bullet bullet;
+		
+					bullet = new Bullet(this.getX()+x,this.getY()-0.5f+y);
+					bullet.setPos(this.getX()+x, this.getY()-0.5f+y, this.getZ());
+			       // bulletSet.add(bullet);	
+			
+			}
 		}
+		for(Bullet bullet : bulletSet){
+			
+				//bullet.draw();
+		}
+		
 		super.draw();
-	
+		cleanBullet();
 	}
 	
-
+	public void cleanBullet(){
+		for (int i=0; i<bulletSet.size(); i++){
+			if(bulletSet.get(i).getZ()<=1150f) bulletSet.remove(i);
+		}
+	}
 	public void update(){
-		//toward to the earth
-		this.setPos(this.getX()+this.speed_x, this.getY()+this.speed_y, this.getZ()+this.speed_z);
-	}
-	
-	public void update2(){
 		time=time+1;
-		//toward to the earth, with acceleration
+		//toward to the earth
 		this.setPos(this.getX()+time*this.speed_x, this.getY()+time*this.speed_y, this.getZ()+time*this.speed_z);
 	}
 }
